@@ -14,6 +14,14 @@ function draw() {
     textSize(32);
     text('Score:${playerScore}',width - 150, 50);
     fill(255);
+    
+    //assegnamento tasti
+    if (keyIsDown(LEFT_ARROW)) {
+        line.move('left');
+    } else if (keyIsDown(RIGHT_ARROW)){
+        line.move('right');
+    }
+
     line.display();
 }
 
@@ -23,6 +31,11 @@ class Line {
         this.height = 25;
         this.color = color(255);
         this.location = createVector((width / 2) - (this.width / 2), height - 35);
+        this.speed = {
+             right: createVector(8, 0), 
+             left: createVector(-8, 0)
+        }
+
     }
 
     display() {
@@ -30,5 +43,11 @@ class Line {
         rect(this.location.x, this.location.y, this.width, this.height);
 
     }
+
+    move(direction) {
+        this.location.add(this.speed[direction]);
+    }
 }
+
+
 
