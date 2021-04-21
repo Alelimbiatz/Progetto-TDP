@@ -1,19 +1,24 @@
 let playerScore = 0;
 let line;
+let ball;
 
 function setup() {
     createCanvas(800, 600);
     line = new Line();
+    ball = new Ball(line);
 }
 
 function draw() {
-    background(0);
-    //dimensioni pallina
-    ellipse(50, 50, 50, 50); 
+    background(0); 
     //testo score
     textSize(32);
     text('Score:${playerScore}',width - 150, 50);
     fill(255);
+
+    ball.bounceEdge();
+    ball.bounceLine();
+
+    ball.update();
     
     //assegnamento tasti
     if (keyIsDown(LEFT_ARROW)) {
@@ -23,6 +28,8 @@ function draw() {
     }
 
     line.display();
+    ball.display();
+
 }
 
 class Line {
@@ -46,6 +53,54 @@ class Line {
 
     move(direction) {
         this.location.add(this.speed[direction]);
+
+        if(this.location.x < 0) {
+            this.location.x = 0;
+        }else if(this.location.x + this.width > width) {
+            this.location.x = width - this.width;
+        }
+    }
+}
+
+class Ball {
+    constructor(line) {
+        this.radius = 15;
+        this.size = this.radius * 2;
+        this.location = createVector(line.location.x + (line.width / 2), (line.location.y - this.radius - 5));
+        this.color = color(255);
+        this.velocity = createVector(5, -5);
+        this.line = line;
+    }
+
+    bounceLine() {
+        // siammo all'interno della larghezza della line
+        if(this.location.x + this.radius >= this.line.location.x &&
+           this.location.x + this.radius <= this.line.location.x + this.line.width) {
+               if(this.location.y + this.radius > this.line.location.y) {
+                   this.velocity.y *= -1;
+                   //this.location.y += this.line.location.y - this.radius -1;
+               }
+           }
+    }
+
+    bounceEdge() {
+        if(this.location.x + this.radius >= width) { //controllo bordo destro
+            this.velocity.x *= -1;
+        }else if(this.location.x - this.radius <= 0) { //controllo bordo sinistro
+            this.velocity.x *= -1;
+        }else if(this.location.y - this.radius <= 0) { //Controllo bordo superiore
+            this.velocity.y *= -1;
+        }
+        
+    }
+
+    display() {
+        fill(this.color);
+        ellipse(this.location.x, this.location.y, this.size, this.size);
+    }
+
+    update() {
+        this.location.add(this.velocity);
     }
 }
 
