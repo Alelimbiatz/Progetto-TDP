@@ -2,6 +2,8 @@ let playerScore = 0;
 let line;
 let ball;
 let bricks = [];
+let userS="Score: ";
+let pl="";
 
 function setup() {
     createCanvas(800, 600);
@@ -19,7 +21,8 @@ function draw() {
     background(0); 
     //testo score
     textSize(32);
-    text('Score:${playerScore}',width - 150, 50);
+    pl = userS.concat(playerScore);
+    text(pl,width - 150, 50);
     fill(255);
 
     ball.bounceEdge();
