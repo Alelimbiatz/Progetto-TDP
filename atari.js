@@ -1,52 +1,92 @@
 let playerScore = 0;
 let line;
 let ball;
-let bricks = [];
-let userS="Score: ";
-let pl="";
+let bricks;
+let userS = "Score:";
+let pl = "";
 
 function setup() {
     createCanvas(800, 600);
+    
+    let colors = createColors();
+    playing = true;
     line = new Line();
     ball = new Ball(line);
+    bricks = createBricks(colors);
+}
+
+function createColors() {
+    const colors = [];
+    colors.push(color(265, 165, 0));
+    colors.push(color(135, 206, 250));
+    colors.push(color(147, 112, 219));
+    for(let i = 0; i < 10; i++) {
+        colors.push(color(random(0, 255), random(0, 255), random(0, 255)));
+    }
+    return colors;
+}
+
+function createBricks(colors) {
+    const bricks = [];
+    const rows = 5;
     const bricksPerRow = 10;
     const brickWidth = width / bricksPerRow;
-    for(let i = 0; i < bricksPerRow; i++){
-        brick = new Brick(createVector(brickWidth * i, 0), brickWidth, 25, color(265, 165, 0));
-        bricks.push(brick);
+    for(let row = 0; row < rows; row++){
+        for(let i = 0; i < bricksPerRow; i++){
+            brick = new Brick(createVector(brickWidth * i, 25 * row), brickWidth, 25, colors[floor(random(0, colors.length))]);
+            bricks.push(brick);
+        }
     }
+    return bricks;
 }
 
 function draw() {
-    background(0); 
-    //testo score
-    textSize(32);
-    pl = userS.concat(playerScore);
-    text(pl,width - 150, 50);
-    fill(255);
+        background(0); 
+        //testo score
+        textSize(32);
+        pl = userS.concat(playerScore);
+        text(pl, width - 150, 50);
+        fill(255);
 
-    ball.bounceEdge();
-    ball.bounceLine();
+        ball.bounceEdge();
+        ball.bounceLine();
 
-    ball.update();
-    
-    //assegnamento tasti
-    if (keyIsDown(LEFT_ARROW)) {
-        line.move('left');
-    } else if (keyIsDown(RIGHT_ARROW)){
-        line.move('right');
-    }
-
-    line.display();
-    ball.display();
-    for(let i = bricks.length -1; i >= 0; i--) {
-        const brick = bricks[i];
-        brick.display();
-        if (brick.isColliding(ball)) {
-            ball.reverse('y');
-            bricks.splice(i, 1);
-            playerScore += brick.points;
+        if(ball.belowBottom()) {
+            textSize(100);
+            playing = false;
+            fill(255, 0, 0);
+            text('Game Over :(', width /2 -300, height /2);
         }
+
+        ball.update();
+    
+        //assegnamento tasti
+        if (keyIsDown(LEFT_ARROW)) {
+            line.move('left');
+        } else if (keyIsDown(RIGHT_ARROW)){
+            line.move('right');
+        }
+
+        for(let i = bricks.length -1; i >= 0; i--) {
+            const brick = bricks[i];
+            brick.display();
+            if (brick.isColliding(ball)) {
+             ball.reverse('y');
+             bricks.splice(i, 1);
+                playerScore += brick.points;
+            }else {
+                brick.display();
+            }
+        }
+
+        line.display();
+        ball.display();
+
+    if(bricks.length == 0) {
+        textSize(100);
+        playing = false;
+        fill(255);
+        text('You Win!!!', width / 2 - 220, height / 2);
     }
 
 }
@@ -125,6 +165,10 @@ class Ball {
     reverse(coord) {
         this.velocity[coord] *= -1;;
     }
+
+    belowBottom() {
+        return this.location.y - this.radius > height;
+    }
 }
 
 class Brick{
@@ -147,7 +191,8 @@ class Brick{
             ball.location.y + ball.radius >= this.location.y &&
             ball.location.x + ball.radius >= this.location.x && //x della ball va sul lato dx del brick
             ball.location.x - ball.radius <= this.location.x + this.width) { //x della ball va sul lato sx del brick
-            return true;            }
+            return true;        
+        }
     }
 }
 
