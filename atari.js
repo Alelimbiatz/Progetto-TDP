@@ -36,7 +36,15 @@ function draw() {
 
     line.display();
     ball.display();
-    bricks.forEach(brick => brick.display());
+    for(let i = bricks.length -1; i >= 0; i--) {
+        const brick = bricks[i];
+        brick.display();
+        if (brick.isColliding(ball)) {
+            ball.reverse('y');
+            bricks.splice(i, 1);
+            playerScore += brick.points;
+        }
+    }
 
 }
 
@@ -85,7 +93,7 @@ class Ball {
         if(this.location.x + this.radius >= this.line.location.x &&
            this.location.x + this.radius <= this.line.location.x + this.line.width) {
                if(this.location.y + this.radius > this.line.location.y) {
-                   this.velocity.y *= -1;
+                   this.reverse('y');
                    //this.location.y += this.line.location.y - this.radius -1;
                }
            }
@@ -93,11 +101,11 @@ class Ball {
 
     bounceEdge() {
         if(this.location.x + this.radius >= width) { //controllo bordo destro
-            this.velocity.x *= -1;
+            this.reverse('x');
         }else if(this.location.x - this.radius <= 0) { //controllo bordo sinistro
-            this.velocity.x *= -1;
+            this.reverse('x');
         }else if(this.location.y - this.radius <= 0) { //Controllo bordo superiore
-            this.velocity.y *= -1;
+            this.reverse('y');
         }
         
     }
@@ -109,6 +117,10 @@ class Ball {
 
     update() {
         this.location.add(this.velocity);
+    }
+
+    reverse(coord) {
+        this.velocity[coord] *= -1;;
     }
 }
 
@@ -124,6 +136,15 @@ class Brick{
     display() {
         fill(this.color);
         rect(this.location.x, this.location.y, this.width, this.height);
+    }
+    
+    isColliding(ball) {
+        //collide con il brick
+        if(ball.location.y - ball.radius <= this.location.y + this.height && //check della y
+            ball.location.y + ball.radius >= this.location.y &&
+            ball.location.x + ball.radius >= this.location.x && //x della ball va sul lato dx del brick
+            ball.location.x - ball.radius <= this.location.x + this.width) { //x della ball va sul lato sx del brick
+            return true;            }
     }
 }
 
