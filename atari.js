@@ -1,11 +1,18 @@
 let playerScore = 0;
 let line;
 let ball;
+let bricks = [];
 
 function setup() {
     createCanvas(800, 600);
     line = new Line();
     ball = new Ball(line);
+    const bricksPerRow = 10;
+    const brickWidth = width / bricksPerRow;
+    for(let i = 0; i < bricksPerRow; i++){
+        brick = new Brick(createVector(brickWidth * i, 0), brickWidth, 25, color(265, 165, 0));
+        bricks.push(brick);
+    }
 }
 
 function draw() {
@@ -29,6 +36,7 @@ function draw() {
 
     line.display();
     ball.display();
+    bricks.forEach(brick => brick.display());
 
 }
 
@@ -103,6 +111,23 @@ class Ball {
         this.location.add(this.velocity);
     }
 }
+
+class Brick{
+    constructor(location, width, height, color) {
+        this.location = location;
+        this.width = width;
+        this.height = height;
+        this.color = color;
+        this.points = 1;        
+    }
+
+    display() {
+        fill(this.color);
+        rect(this.location.x, this.location.y, this.width, this.height);
+    }
+}
+
+
 
 
 
