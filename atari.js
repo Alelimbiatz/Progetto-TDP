@@ -45,9 +45,7 @@ function draw() {
         //testo score
         textSize(32);
         pl = userS.concat(playerScore);
-        text(pl, width - 150, 50);
-        fill(255);
-
+        
         ball.bounceEdge();
         ball.bounceLine();
 
@@ -88,6 +86,11 @@ function draw() {
         fill(255);
         text('You Win!!!', width / 2 - 220, height / 2);
     }
+
+
+    text(pl, width - 150, 50);
+        fill(255);
+
 
 }
 
