@@ -28,7 +28,7 @@ function createColors() {
 
 function createBricks(colors) {
     const bricks = [];
-    const rows = 5;
+    const rows = 7;
     const bricksPerRow = 10;
     const brickWidth = width / bricksPerRow;
     for(let row = 0; row < rows; row++){
@@ -45,7 +45,7 @@ function draw() {
         //testo score
         textSize(32);
         pl = userS.concat(playerScore);
-        
+
         ball.bounceEdge();
         ball.bounceLine();
 
@@ -87,10 +87,8 @@ function draw() {
         text('You Win!!!', width / 2 - 220, height / 2);
     }
 
-
-    text(pl, width - 150, 50);
-        fill(255);
-
+    text(pl, width - 800, 600);
+    fill(255);
 
 }
 
